@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortcut Table</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #121212;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .group {
+            width: 90%;
+            margin-bottom: 10px;
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .group-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, 120px);
+            justify-content: flex-start;
+            gap: 0px;
+        }
+        .shortcut {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            background: #1e1e1e;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100px;
+            text-align: center;
+        }
+        .shortcut:hover {
+            background: #3a3a3a;
+        }
+        img {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 8px;
+        }
+        .desc {
+            text-align: center;
+            font-size: 12px;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow: hidden;
+            max-width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const groups = {
+            "Social Media": [
+                { name: "Facebook", url: "https://www.facebook.com" },
+                { name: "Twitter", url: "https://www.twitter.com" },
+                { name: "Instagram", url: "https://www.instagram.com" },
+                { name: "LinkedIn", url: "https://www.linkedin.com" },
+                { name: "Reddit", url: "https://www.reddit.com" }
+            ],
+            "Search & Knowledge": [
+                { name: "Google", url: "https://www.google.com" },
+                { name: "Wikipedia", url: "https://www.wikipedia.org" },
+                { name: "Quora", url: "https://www.quora.com" }
+            ],
+            "Entertainment": [
+                { name: "YouTube", url: "https://www.youtube.com" },
+                { name: "Netflix", url: "https://www.netflix.com" },
+                { name: "Twitch", url: "https://www.twitch.tv" },
+                { name: "Spotify", url: "https://www.spotify.com" }
+            ],
+            "Shopping": [
+                { name: "Amazon", url: "https://www.amazon.com" },
+                { name: "eBay", url: "https://www.ebay.com" },
+                { name: "Pinterest", url: "https://www.pinterest.com" }
+            ],
+            "Tech & Development": [
+                { name: "GitHub", url: "https://www.github.com" },
+                { name: "Stack Overflow", url: "https://stackoverflow.com" },
+                { name: "GitLab", url: "https://gitlab.com" },
+                { name: "Bitbucket", url: "https://bitbucket.org" },
+                { name: "Dummy 1", url: "https://dummy1.com" },
+                { name: "Dummy 2", url: "https://dummy2.com" },
+                { name: "Dummy 3", url: "https://dummy3.com" },
+                { name: "Dummy 4", url: "https://dummy4.com" },
+                { name: "Dummy 5", url: "https://dummy5.com" },
+                { name: "Dummy 6", url: "https://dummy6.com" },
+                { name: "Dummy 7", url: "https://dummy7.com" },
+                { name: "Dummy 8", url: "https://dummy8.com" },
+                { name: "Dummy 9", url: "https://dummy9.com" },
+                { name: "Dummy 10", url: "https://dummy10.com" },
+                { name: "Dummy 11", url: "https://dummy11.com" },
+                { name: "Dummy 12", url: "https://dummy12.com" },
+                { name: "Dummy 13", url: "https://dummy13.com" },
+                { name: "Dummy 14", url: "https://dummy14.com" },
+                { name: "Dummy 15", url: "https://dummy15.com" },
+                { name: "Dummy 16", url: "https://dummy16.com" },
+                { name: "Dummy 17", url: "https://dummy17.com" },
+                { name: "Dummy 18", url: "https://dummy18.com" },
+                { name: "Dummy 19", url: "https://dummy19.com" },
+                { name: "Really really really really long label", url: "https://dummy20.com" }
+            ]
+        };
+
+        $(document).ready(function() {
+            Object.keys(groups).forEach(groupName => {
+                let groupHtml = `<div class='group'><div class='group-title'>${groupName}</div><div class='container'>`;
+                groups[groupName].forEach(shortcut => {
+                    let faviconKey = `favicon_${shortcut.url}`;
+                    let cachedIcon = localStorage.getItem(faviconKey);
+                    let iconUrl = cachedIcon ? cachedIcon : `https://www.google.com/s2/favicons?domain=${shortcut.url}`;
+
+                    groupHtml += `
+                        <div class="shortcut" data-url="${shortcut.url}">
+                            <img src="${iconUrl}" alt="${shortcut.name} Icon" onerror="this.src='default-icon.png';">
+                            <div class="desc" title="${shortcut.name}">${shortcut.name}</div>
+                        </div>
+                    `;
+
+                    if (!cachedIcon) {
+                        fetch(iconUrl)
+                            .then(response => {
+                                if (response.ok) {
+                                    localStorage.setItem(faviconKey, iconUrl);
+                                }
+                            })
+                            .catch(() => console.warn("Failed to fetch icon for " + shortcut.url));
+                    }
+                });
+                groupHtml += `</div></div>`;
+                $('body').append(groupHtml);
+            });
+
+            $('.shortcut').click(function() {
+                window.open($(this).data('url'), '_blank');
+            });
+        });
+    </script>
+</body>
+</html>
